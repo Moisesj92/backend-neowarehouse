@@ -4,6 +4,8 @@ logs
 *.log
 .pnpm-debug.log*
 
+# Outputs directories
+dist/
 
 # Dependency directories
 node_modules/
