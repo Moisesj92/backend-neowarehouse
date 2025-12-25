@@ -23,7 +23,6 @@ API REST construida con Express + TypeScript + Node 22 para el sistema de gesti�
    El archivo `.env` contiene la configuración de la base de datos PostgreSQL:
 
    ```
-   DB_HOST=postgres
    DB_PORT=5432
    DB_NAME=neo_warehouse
    DB_USER=postgres
@@ -33,7 +32,14 @@ API REST construida con Express + TypeScript + Node 22 para el sistema de gesti�
 3. **Iniciar los servicios con Docker**
 
    ```bash
-   docker compose up
+   # Construir e iniciar los servicios
+   docker compose up -d
+
+   # Ejecutar migraciones de Prisma
+   docker compose exec app pnpm prisma migrate dev
+
+   # (Opcional) Generar datos de prueba con seeds
+   docker compose exec app pnpm prisma db seed
    ```
 
    Esto iniciará:
@@ -48,6 +54,9 @@ API REST construida con Express + TypeScript + Node 22 para el sistema de gesti�
 ```bash
 # Iniciar en modo desarrollo con hot-reload
 docker compose up
+
+# Ejecutar en segundo plano
+docker compose up -d
 
 # Ver logs
 docker compose logs -f app
@@ -65,6 +74,12 @@ docker compose down -v
 # Instalar dependencias
 pnpm install
 
+# Generar Prisma Client
+pnpm prisma generate
+
+# Ejecutar migraciones
+pnpm prisma migrate dev
+
 # Modo desarrollo
 pnpm dev
 
@@ -81,6 +96,9 @@ pnpm start
 backend-neowarehouse/
 ├── src/
 │   └── index.ts          # Punto de entrada de la aplicación
+├── prisma/
+│   ├── schema.prisma     # Esquema de base de datos
+│   └── migrations/       # Migraciones de base de datos
 ├── dist/                 # Archivos compilados (generados)
 ├── .env                  # Variables de entorno (no versionado)
 ├── .env.example          # Ejemplo de variables de entorno
@@ -114,6 +132,10 @@ Respuesta:
 - `pnpm dev` - Inicia el servidor en modo desarrollo con hot-reload
 - `pnpm build` - Compila el código TypeScript a JavaScript
 - `pnpm start` - Ejecuta la aplicación compilada
+- `pnpm prisma generate` - Genera el cliente de Prisma
+- `pnpm prisma migrate dev` - Ejecuta migraciones en desarrollo
+- `pnpm prisma migrate deploy` - Ejecuta migraciones en producción
+- `pnpm prisma studio` - Abre Prisma Studio para visualizar datos
 
 ## 🐳 Comandos útiles de Docker
 
@@ -121,7 +143,7 @@ Respuesta:
 # Reconstruir las imágenes
 docker compose build
 
-# Ejecutar en segundo plano
+# Iniciar servicios en segundo plano
 docker compose up -d
 
 # Ver contenedores en ejecución
@@ -130,13 +152,53 @@ docker compose ps
 # Entrar al contenedor de la app
 docker compose exec app sh
 
+# Ejecutar migraciones de Prisma
+docker compose exec app pnpm prisma migrate dev
+
+# Ejecutar migraciones en producción
+docker compose exec app pnpm prisma migrate deploy
+
+# Generar Prisma Client
+docker compose exec app pnpm prisma generate
+
+# Abrir Prisma Studio
+docker compose exec app pnpm prisma studio
+
+# Ver logs de la app
+docker compose logs -f app
+
+# Reiniciar solo la app
+docker compose restart app
+
 # Entrar al contenedor de PostgreSQL
 docker compose exec db psql -U postgres -d neo_warehouse
+
+# Hacer backup de la base de datos
+docker compose exec db pg_dump -U postgres neo_warehouse > backup.sql
+
+# Restaurar backup
+docker compose exec -T db psql -U postgres -d neo_warehouse < backup.sql
 ```
 
 ## 🗄️ Base de datos
 
-La aplicación utiliza PostgreSQL 18.1 Alpine. Los datos se persisten en un volumen de Docker llamado `postgres_data`.
+La aplicación utiliza PostgreSQL 18.1 Alpine con Prisma como ORM. Los datos se persisten en un volumen de Docker llamado `postgres_data`.
+
+### Gestión de migraciones
+
+```bash
+# Crear una nueva migración
+docker compose exec app pnpm prisma migrate dev --name nombre_migracion
+
+# Aplicar migraciones pendientes
+docker compose exec app pnpm prisma migrate deploy
+
+# Resetear la base de datos (¡cuidado en producción!)
+docker compose exec app pnpm prisma migrate reset
+
+# Ver estado de migraciones
+docker compose exec app pnpm prisma migrate status
+```
 
 Para conectarte directamente a la base de datos:
 
@@ -149,6 +211,7 @@ docker compose exec db psql -U postgres -d neo_warehouse
 - **Node.js** v22.20.0
 - **Express** v5.2.1
 - **TypeScript** v5.9.3
+- **Prisma** - ORM para Node.js y TypeScript
 - **PostgreSQL** v18.1
 - **Docker** & Docker Compose
 - **pnpm** - Gestor de paquetes
