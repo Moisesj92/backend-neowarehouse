@@ -1,16 +1,22 @@
 import express from "express";
 import { prisma } from "./lib/prisma";
+import productRoutes from "./routes/product.routes";
+import categoryRoutes from "./routes/category.routes";
 
 const app = express();
 
 app.use(express.json());
 
-app.get("/status", (req, res) => {
+// Ruta de healthcheck
+app.get("/api/status", (req, res) => {
   res.json({
     status: "Running",
     timestamp: new Date().toISOString(),
   });
 });
+
+app.use("/api/products", productRoutes);
+app.use("/api/categories", categoryRoutes);
 
 const PORT = 3000;
 

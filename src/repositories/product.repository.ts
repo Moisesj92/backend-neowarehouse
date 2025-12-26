@@ -42,6 +42,12 @@ export class ProductRepository {
       },
     });
   }
+
+  async findByExactName(name: string): Promise<Product | null> {
+    return prisma.product.findFirst({
+      where: { name },
+    });
+  }
 }
 
 export const productRepository = new ProductRepository();

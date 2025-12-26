@@ -9,23 +9,20 @@ import {
 
 const router = Router();
 
-// Product
-router.post(
-  "/",
-  validate(createProductSchema), // ← Valida antes de llegar al controller
-  ProductController.store
-);
+router.get("/", ProductController.index);
 
-router.put(
-  "/:id",
-  validate(updateProductSchema), // ← Valida params.id Y body
-  ProductController.update
-);
+router.get("/:id", validate(getProductByIdSchema), ProductController.show);
 
-router.get(
+router.post("/", validate(createProductSchema), ProductController.store);
+
+router.put("/:id", validate(updateProductSchema), ProductController.update);
+
+router.patch("/:id", validate(updateProductSchema), ProductController.update);
+
+router.delete(
   "/:id",
-  validate(getProductByIdSchema), // ← Solo valida params.id
-  ProductController.show
+  validate(getProductByIdSchema),
+  ProductController.destroy
 );
 
 export default router;

@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { ProductService } from "../services/product.service";
+import { productService } from "../services/product.service";
 import {
   createProductSchema,
   updateProductSchema,
@@ -10,11 +10,11 @@ export const ProductController = {
   // GET /products - Obtener todos los productos
   index: async (req: Request, res: Response) => {
     try {
-      const products = await ProductService.getAllProducts();
+      const products = await productService.getAllProducts();
       res.json(products);
     } catch (error: any) {
       console.error(error);
-      res.status(500).json({ error: "Error interno del servidor" });
+      res.status(500).json({ error: "Internal server error" });
     }
   },
 
@@ -22,21 +22,21 @@ export const ProductController = {
   show: async (req: Request, res: Response) => {
     try {
       const { id } = getProductByIdSchema.parse({ params: req.params }).params;
-      const product = await ProductService.getProductById(id);
+      const product = await productService.getProductById(id);
       res.json(product);
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({
-          message: "ID inválido",
+          message: "Invalid ID",
           errors: error.issues,
         });
       }
 
-      if (error.message === "Producto no encontrado") {
+      if (error.message === "Product not found") {
         return res.status(404).json({ error: error.message });
       }
 
-      return res.status(500).json({ error: "Error al obtener producto" });
+      return res.status(500).json({ error: "Error fetching product" });
     }
   },
 
@@ -44,23 +44,23 @@ export const ProductController = {
   store: async (req: Request, res: Response) => {
     try {
       const { body } = createProductSchema.parse({ body: req.body });
-      const newProduct = await ProductService.createProduct(body);
+      const newProduct = await productService.createProduct(body);
       res.status(201).json(newProduct);
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({
-          message: "Datos inválidos",
+          message: "Invalid data",
           errors: error.issues,
         });
       }
 
-      if (error.message === "Ya existe un producto con este nombre.") {
+      if (error.message === "Product already exists") {
         return res.status(409).json({ error: error.message });
       }
 
       return res
         .status(500)
-        .json({ error: error.message || "Error al crear producto" });
+        .json({ error: error.message || "Error creating product" });
     }
   },
 
@@ -72,7 +72,7 @@ export const ProductController = {
         body: req.body,
       });
 
-      const updatedProduct = await ProductService.updateProduct(
+      const updatedProduct = await productService.updateProduct(
         params.id,
         body
       );
@@ -80,22 +80,22 @@ export const ProductController = {
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({
-          message: "Datos inválidos",
+          message: "Invalid data",
           errors: error.issues,
         });
       }
 
-      if (error.message === "Producto no encontrado") {
+      if (error.message === "Product not found") {
         return res.status(404).json({ error: error.message });
       }
 
-      if (error.message === "Ya existe otro producto con este nombre.") {
+      if (error.message === "Another product with this name already exists") {
         return res.status(409).json({ error: error.message });
       }
 
       return res
         .status(500)
-        .json({ error: error.message || "Error al actualizar producto" });
+        .json({ error: error.message || "Error updating product" });
     }
   },
 
@@ -103,21 +103,21 @@ export const ProductController = {
   destroy: async (req: Request, res: Response) => {
     try {
       const { id } = getProductByIdSchema.parse({ params: req.params }).params;
-      const result = await ProductService.deleteProduct(id);
+      const result = await productService.deleteProduct(id);
       res.json(result);
     } catch (error: any) {
       if (error.issues) {
         return res.status(400).json({
-          message: "ID inválido",
+          message: "Invalid ID",
           errors: error.issues,
         });
       }
 
-      if (error.message === "Producto no encontrado") {
+      if (error.message === "Product not found") {
         return res.status(404).json({ error: error.message });
       }
 
-      return res.status(500).json({ error: "Error al eliminar producto" });
+      return res.status(500).json({ error: "Error deleting product" });
     }
   },
 };

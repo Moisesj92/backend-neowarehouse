@@ -1,18 +1,19 @@
-import * as z from "zod";
+import { z } from "zod";
 import { uuidSchema } from "./common.schema";
 
 const productBaseSchema = z.object({
   name: z
     .string()
-    .min(1, "El nombre es requerido")
-    .max(100, "El nombre no puede exceder 100 caracteres")
+    .min(1, "Name is required")
+    .max(100, "Name cannot exceed 100 characters")
     .trim(),
-  price: z.number().positive("El precio debe ser mayor a 0"),
+  price: z.number().positive("Price must be greater than 0"),
   stock: z
     .number()
-    .int("El stock debe ser un número entero")
-    .nonnegative("El stock no puede ser negativo")
+    .int("Stock must be an integer")
+    .nonnegative("Stock cannot be negative")
     .default(0),
+  categoryId: uuidSchema.describe("Category ID"),
 });
 
 export const createProductSchema = z.object({
