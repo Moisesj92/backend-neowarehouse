@@ -14,14 +14,11 @@ const prisma = new PrismaClient({
 
 app.use(express.json());
 
-// Get all products
-app.get("/", async (req: Request, res: Response) => {
-  const productCount = await prisma.product.count();
-  res.json(
-    productCount === 0
-      ? "No product have been added yet."
-      : "Some product have been added to the database."
-  );
+app.get("/status", (req, res) => {
+  res.json({
+    status: "Running",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 const PORT = 3000;
