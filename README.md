@@ -65,28 +65,6 @@ docker compose down
 docker compose down -v
 ```
 
-### Sin Docker (local)
-
-```bash
-# Instalar dependencias
-pnpm install
-
-# Generar Prisma Client
-pnpm prisma generate
-
-# Ejecutar migraciones
-pnpm prisma migrate dev
-
-# Modo desarrollo
-pnpm dev
-
-# Construir para producción
-pnpm build
-
-# Ejecutar en producción
-pnpm start
-```
-
 ## 📁 Estructura del proyecto
 
 ```
@@ -442,7 +420,6 @@ Respuestas HTTP apropiadas con mensajes descriptivos:
 
 - **400 Bad Request**: Errores de validación (datos inválidos, formato incorrecto)
 - **404 Not Found**: Recurso no encontrado
-- **409 Conflict**: Conflictos de negocio (nombres duplicados, stock insuficiente, restricciones de integridad)
 - **500 Internal Server Error**: Errores del servidor
 
 Cada error incluye:
@@ -474,45 +451,3 @@ Cada error incluye:
 - **Códigos HTTP semánticos**: Uso apropiado de códigos de estado
 - **Respuestas consistentes**: Formato JSON uniforme en todas las respuestas
 - **CORS configurado**: Permite solicitudes desde el frontend
-
-#### **Gestión de stock en tiempo real:**
-
-1. **Transaccionalidad**: Cada movimiento de inventario actualiza automáticamente el stock del producto
-2. **Cálculo dinámico**: El stock se calcula basándose en todos los movimientos históricos
-3. **Sincronización automática**: Después de cada movimiento ([`inventoryMovement.service.ts`](src/services/inventoryMovement.service.ts)):
-   - Se calcula el nuevo stock con [`calculateCurrentStock`](src/repositories/inventoryMovement.repository.ts)
-   - Se actualiza el campo `stock` del producto mediante [`productRepository.update`](src/repositories/product.repository.ts)
-4. **Validación previa**: Para movimientos OUT, se verifica el stock antes de permitir la operación
-
-#### **Consistencia de datos:**
-
-- **Prisma ORM**: Garantiza integridad referencial y transacciones ACID
-- **Pool de conexiones**: Configurado con [`PrismaPg`](src/lib/prisma.ts) adapter para PostgreSQL
-- **Graceful shutdown**: Cierre ordenado de conexiones en [`index.ts`](src/index.ts)
-
-#### **Arquitectura en capas:**
-
-```
-Cliente (Frontend)
-      ↓
-Routes (Definición de endpoints)
-      ↓
-Middlewares (Validación con Zod)
-      ↓
-Controllers (Manejo de HTTP)
-      ↓
-Services (Lógica de negocio)
-      ↓
-Repositories (Acceso a datos)
-      ↓
-Prisma ORM
-      ↓
-PostgreSQL
-```
-
-Esta arquitectura permite:
-
-- Separación clara de responsabilidades
-- Fácil testing y mantenimiento
-- Validación en múltiples niveles
-- Respuestas consistentes y predecibles
