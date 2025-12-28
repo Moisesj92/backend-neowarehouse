@@ -24,6 +24,10 @@ export class ProductService {
       throw new Error("The price must be positive");
     }
 
+    if (data.price > 100000000) {
+      throw new Error("Price exceeds maximum allowed value");
+    }
+
     const category = await categoryRepository.findById(data.categoryId);
     if (!category) {
       throw new Error("Category not found");

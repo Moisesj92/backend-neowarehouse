@@ -1,9 +1,17 @@
 import express from "express";
+import cors from "cors";
 import { prisma } from "./lib/prisma";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN?.split(",") || "*",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 

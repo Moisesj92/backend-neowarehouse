@@ -7,7 +7,7 @@ const productBaseSchema = z.object({
     .min(1, "Name is required")
     .max(100, "Name cannot exceed 100 characters")
     .trim(),
-  price: z.number().positive("Price must be greater than 0"),
+  price: z.number().int().positive("Price must be greater than 0"),
   stock: z
     .number()
     .int("Stock must be an integer")
