@@ -3,6 +3,7 @@ import cors from "cors";
 import { prisma } from "./lib/prisma";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
+import inventoryMovementRoutes from "./routes/inventoryMovement.routes";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.get("/api/status", (req, res) => {
 
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/inventory-movements", inventoryMovementRoutes);
 
 const PORT = 3000;
 
