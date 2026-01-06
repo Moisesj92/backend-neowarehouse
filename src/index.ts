@@ -17,16 +17,12 @@ app.use(
 
 app.use(express.json());
 
-// API. Key Auth
-app.use(ApiKeyAuth);
-
-// Ruta de healthcheck
-app.get("/api/status", (req, res) => {
-  res.json({
-    status: "Running",
-    timestamp: new Date().toISOString(),
-  });
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
 });
+
+// API Key Auth
+app.use(ApiKeyAuth);
 
 app.use("/api/products", productRoutes);
 app.use("/api/categories", categoryRoutes);
