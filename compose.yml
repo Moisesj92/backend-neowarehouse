@@ -9,8 +9,9 @@ services:
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?schema=public
       - PORT=3000
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3001}
-    command: sh -c "pnpm db:deploy && pnpm dev"
+      - API_SECRET_KEY=${API_SECRET_KEY}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+    command: sh -c "pnpm db:deploy && pnpm db:seed && pnpm dev"
     depends_on:
       db:
         condition: service_healthy

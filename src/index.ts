@@ -4,17 +4,21 @@ import { prisma } from "./lib/prisma";
 import productRoutes from "./routes/product.routes";
 import categoryRoutes from "./routes/category.routes";
 import inventoryMovementRoutes from "./routes/inventoryMovement.routes";
+import { ApiKeyAuth } from "./middlewares/apiKeyAuth.middleware";
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN?.split(",") || "*",
+    origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
     credentials: true,
   })
 );
 
 app.use(express.json());
+
+// API. Key Auth
+app.use(ApiKeyAuth);
 
 // Ruta de healthcheck
 app.get("/api/status", (req, res) => {

@@ -11,13 +11,18 @@ const productBaseSchema = z.object({
   stock: z
     .number()
     .int("Stock must be an integer")
-    .nonnegative("Stock cannot be negative")
-    .default(0),
+    .nonnegative("Stock cannot be negative"),
   categoryId: uuidSchema.describe("Category ID"),
 });
 
 export const createProductSchema = z.object({
-  body: productBaseSchema,
+  body: productBaseSchema.extend({
+    stock: z
+      .number()
+      .int("Stock must be an integer")
+      .nonnegative("Stock cannot be negative")
+      .default(0),
+  }),
 });
 
 export const updateProductSchema = z.object({
@@ -33,5 +38,5 @@ export const getProductByIdSchema = z.object({
   }),
 });
 
-export type CreateProductInput = z.infer<typeof productBaseSchema>;
-export type UpdateProductInput = Partial<CreateProductInput>;
+export type CreateProductInput = z.infer<typeof createProductSchema>["body"];
+export type UpdateProductInput = z.infer<typeof updateProductSchema>["body"];
