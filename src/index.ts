@@ -8,6 +8,8 @@ import { ApiKeyAuth } from "./middlewares/apiKeyAuth.middleware";
 
 const app = express();
 
+console.log("ALLOWED_ORIGINS:", process.env.ALLOWED_ORIGINS);
+
 app.use(
   cors({
     origin: process.env.ALLOWED_ORIGINS?.split(",") || [],
