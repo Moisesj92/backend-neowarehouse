@@ -1,10 +1,7 @@
 import express from "express";
 import cors from "cors";
 import { prisma } from "./lib/prisma";
-import productRoutes from "./routes/product.routes";
-import categoryRoutes from "./routes/category.routes";
-import inventoryMovementRoutes from "./routes/inventoryMovement.routes";
-import { ApiKeyAuth } from "./middlewares/apiKeyAuth.middleware";
+import apiRouter from "./routes";
 
 const app = express();
 
@@ -21,12 +18,7 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-// API Key Auth
-app.use(ApiKeyAuth);
-
-app.use("/api/products", productRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/inventory-movements", inventoryMovementRoutes);
+app.use("/api", apiRouter);
 
 const PORT = 3000;
 

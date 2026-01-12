@@ -9,8 +9,10 @@ services:
     environment:
       - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:${DB_PORT}/${DB_NAME}?schema=public
       - PORT=3000
-      - API_SECRET_KEY=${API_SECRET_KEY}
       - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - HMAC_SECRET_KEY=${HMAC_SECRET_KEY}
+      - HMAC_TIMESTAMP_TOLERANCE=${HMAC_TIMESTAMP_TOLERANCE}
+      - HMAC_ALGORITHM=${HMAC_ALGORITHM}
     command: sh -c "pnpm db:deploy && pnpm db:seed && pnpm dev"
     depends_on:
       db:
